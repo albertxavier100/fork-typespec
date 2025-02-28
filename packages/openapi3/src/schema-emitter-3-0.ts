@@ -4,6 +4,7 @@ import {
   getExamples,
   getMaxValueExclusive,
   getMinValueExclusive,
+  IntrinsicScalarName,
   intrinsicScalarNames,
   IntrinsicType,
   isNullType,
@@ -287,7 +288,7 @@ export class OpenAPI3SchemaEmitter extends OpenAPI3SchemaEmitterBase<OpenAPI3Sch
         let s : Scalar | undefined = type
         if (s) {
           while (s) {
-            console.log('------current scalar --', s, intrinsicScalarNames.includes(s.kind))
+            console.log('------current scalar --', s, Object.freeze(intrinsicScalarNames).includes(s.name as IntrinsicScalarName))
             s = s.baseScalar;
           }
         } 
