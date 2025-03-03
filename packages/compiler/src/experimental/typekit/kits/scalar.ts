@@ -483,7 +483,6 @@ defineKit<TypekitExtension>({
 
         current = current.baseScalar;
       }
-
       return null;
     },
 
