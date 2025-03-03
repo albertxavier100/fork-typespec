@@ -457,7 +457,6 @@ export class OpenAPI3SchemaEmitterBase<
 
     if (schema && isRef && !(prop.type.kind === "Model" && isArrayModelType(program, prop.type))) {
       if (Object.keys(additionalProps).length === 0) {
-
         return schema;
       } else {
         if (additionalProps.xml?.attribute) {
