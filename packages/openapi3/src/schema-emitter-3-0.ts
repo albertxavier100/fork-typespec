@@ -216,13 +216,22 @@ export class OpenAPI3SchemaEmitter extends OpenAPI3SchemaEmitterBase<OpenAPI3Sch
             });
           } else if (type && type.kind === "Scalar") {
             let objectInitializer: Record<string, unknown> = {};
-            if ("$ref" in schema) objectInitializer = { $ref: schema.$ref, ...additionalProps };
-            else objectInitializer = { schema, ...additionalProps };
 
             const intrinsicScalarName = getIntrinsicScalarName(type);
-            if (intrinsicScalarName && exactIntrinsicScalars.has(intrinsicScalarName)) {
+            if (
+              intrinsicScalarName &&
+              exactIntrinsicScalars.has(intrinsicScalarName) &&
+              "$ref" in schema
+            ) {
+              objectInitializer = { $ref: schema.$ref, ...additionalProps };
               delete objectInitializer["nullable"];
+            } else {
+              objectInitializer = {
+                anyOf: Builders.array([schema]),
+                ...additionalProps,
+              };
             }
+
             return new ObjectBuilder<OpenAPI3Schema>(objectInitializer);
           } else {
             return new ObjectBuilder({ allOf: Builders.array([schema]), ...additionalProps });
