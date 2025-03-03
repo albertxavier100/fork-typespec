@@ -185,7 +185,6 @@ export class OpenAPI3SchemaEmitter extends OpenAPI3SchemaEmitterBase<OpenAPI3Sch
       }
     }
 
-    const scalarMap = new Map<string, ObjectBuilder<OpenAPI3Schema>[]>();
     const wrapWithObjectBuilder = (
       schemaMember: ScalarMember,
       { mergeUnionWideConstraints }: { mergeUnionWideConstraints: boolean },
@@ -210,7 +209,6 @@ export class OpenAPI3SchemaEmitter extends OpenAPI3SchemaEmitterBase<OpenAPI3Sch
           !(type && shouldInline(program, type))
         ) {
           if (type && type.kind === "Model") {
-            // TODO: handle here
             return new ObjectBuilder({
               type: "object",
               allOf: Builders.array([schema]),
@@ -225,14 +223,7 @@ export class OpenAPI3SchemaEmitter extends OpenAPI3SchemaEmitterBase<OpenAPI3Sch
             if (intrinsicScalarName && exactIntrinsicScalars.has(intrinsicScalarName)) {
               delete objectInitializer["nullable"];
             }
-            const objectBuilder = new ObjectBuilder<OpenAPI3Schema>(objectInitializer);
-            if (intrinsicScalarName && !scalarMap.has(intrinsicScalarName)) {
-              scalarMap.set(type.name, [objectBuilder]);
-            }
-            if (intrinsicScalarName && !scalarMap.has(intrinsicScalarName)) {
-              scalarMap.get(type.name)!.push(objectBuilder);
-            }
-            return objectBuilder;
+            return new ObjectBuilder<OpenAPI3Schema>(objectInitializer);
           } else {
             return new ObjectBuilder({ allOf: Builders.array([schema]), ...additionalProps });
           }
